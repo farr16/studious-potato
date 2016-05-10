@@ -1,7 +1,8 @@
 #include <stdio.h>
 
-#define LOWER	33 /* Lower limit of char values we are counting*/
-#define UPPER	126 /* Upper limit of char values we are counting*/
+#define NUMCHAR	128 /*total number of char*/
+#define LOWER	33 /*Value of lowest printable char*/
+#define UPPER	126 /*Value of higest printable char*/
 
 /* Program to print a horizontally oriented histogram of the frequency
  * of occurrences for each the printable ASCII characters in its input
@@ -21,9 +22,23 @@
   */
 
 main() {
-	int i;
+	int c, i;
 	
-	for (i = LOWER; i <= UPPER; i++) {
-		printf("Char Value %d:\t%c\n", i, i);
+	int frequencies[NUMCHAR];
+	
+	/* Make sure array is clear of junk values */
+	for(i=0; i<NUMCHAR; i++)
+		frequencies[i] = 0;
+	
+	while( (c = getchar()) != EOF)
+		if ( (c >= LOWER) && (c <=UPPER))
+			frequencies[c]++;
+	
+	for(i=LOWER; i<= UPPER; i++){
+		if (frequencies[i] > 0) {
+			printf("Char '%c':\t%d\n", i, frequencies[i]);
+		}
 	}
+	
+	return 0;
 }
