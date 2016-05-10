@@ -8,21 +8,9 @@
  * of occurrences for each the printable ASCII characters in its input
  * Based on exercise 1-14 in The C Programming Language Second Edition
  */
- 
- /* Process:
-  * Get character from input stream
-  * Increase value of that character's count in array of frequency counts
-  * If the count for that char value is greater than max, change max value
-  * Repeat till end
-  * At end, iterate over array until we find char value with lowest non-zero
-  *		value
-  * For each char with more than zero occurrences, print number of = signs
-  * 	equal to the number of occurrences of that char divided by the number
-  *		of occurrences of the least common character
-  */
 
 main() {
-	int c, i;
+	int c, i, j;
 	
 	int frequencies[NUMCHAR];
 	
@@ -36,7 +24,10 @@ main() {
 	
 	for(i=LOWER; i<= UPPER; i++){
 		if (frequencies[i] > 0) {
-			printf("Char '%c':\t%d\n", i, frequencies[i]);
+			printf("Char '%c'|", i);
+			for (j=0; j<frequencies[i];j++)
+				putchar('=');
+			putchar('\n');
 		}
 	}
 	
