@@ -44,7 +44,7 @@ int main() {
 }
 
 void place(char *board, int current_row, int len){
-	int col, row;
+	int col, row, check_col;
 	
 	/* If this is called past final row, this is a solution/base case, return */
 	if(current_row == len) {
@@ -62,6 +62,18 @@ void place(char *board, int current_row, int len){
 			/* Check for queen in above column*/
 			if( *(board + len*row + col) == 'Q')
 				break;
+			
+			/* check for diagonal attacks */
+			/* upper left */
+			check_col = col - (current_row - row);
+			if ( (check_col >= 0) && (*(board + len*row + check_col) == 'Q') ){
+				break;
+			}
+			/* upper right */
+			check_col = col + (current_row - row);
+			if ( (check_col < len) && (*(board + len*row + check_col) == 'Q') ){
+				break;
+			}
 		}
 		
 		/* If we reach the current row, place a queen here */
