@@ -11,6 +11,8 @@
 
 void initMatrix(int *matrix, int rows, int cols);
 void printMatrix(int *matrix, int rows, int cols);
+void findLCS(int *matrix, int rows, int cols, char* s1, char*s2);
+int minThree(int left, int diag, int top);
 
 int main(int argc, char *argv[]) {
 	
@@ -27,9 +29,11 @@ int main(int argc, char *argv[]) {
 	num_cols = strlen(argv[2]) + 1; /* second string informs num of columns */
 		
 	matrix = (int *)malloc(num_rows * num_cols * sizeof(int));
-		
+	
 	/* Initialize starting matrix */
 	initMatrix(matrix, num_rows, num_cols);
+	
+	findLCS(matrix, num_rows, num_cols, argv[1],argv[2]);
 	
 	/* Print matrix for debugging purposes */
 	printMatrix(matrix, num_rows, num_cols);
@@ -60,6 +64,41 @@ void initMatrix(int *matrix, int rows, int cols) {
 				count = 1;
 		}
 	}
+}
+
+void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
+	int i, j;
+	printf("String 1: %s\nString 2: %s\n", s1, s2);
+	
+	int left, diag, top;
+	
+	for(i=1; i<rows; i++) {
+		for(j=1; j<cols; j++){
+			left = *(matrix + i*cols + (j-1));
+			if ( (*(s1+i-1)) == (*(s2+j-1)) )
+				diag = *(matrix + (i-1)*cols + (j-1));
+			else
+				diag = 10000; /*Arbitrarily large, change later*/
+			top = *(matrix + (i-1)*cols + j);
+			*(matrix + i*cols + j) = minThree(left, diag, top) + 1;
+		}
+	}
+	
+	return;
+}
+
+/* Code for determining where the lowest score path from the origin comes from
+ * Returns 1 if the left score is the min (or tied for min)
+ * Returns 2 if the diagonal score is the min (or tied with top)
+ * Returns 3 if the top score is the min
+ */
+int minThree(int left, int diag, int top){
+	if ( (left<=top) && (left<=diag) )
+		return left;
+	else if ( (diag<=left) && (diag<=top) )
+		return diag;
+	else
+		return top;
 }
 
 /* Test code for printing contents of the matrix used for finding the longest
