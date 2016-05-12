@@ -68,7 +68,6 @@ void initMatrix(int *matrix, int rows, int cols) {
 
 void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
 	int i, j;
-	printf("String 1: %s\nString 2: %s\n", s1, s2);
 	
 	int left, diag, top;
 	
