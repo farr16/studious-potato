@@ -22,15 +22,26 @@ int main(int argc, char *argv[]) {
 		
 		matrix = (int *)malloc(num_rows * num_cols * sizeof(int));
 		
-		/* Test code for making sure memory access works as expected */
+		/* Initialize starting matrix */
 		count = 0;
 		for (row=0; row < num_rows; row++) {
 			for (col=0; col < num_cols; col++) {
-				*(matrix + row*num_cols + col) = ++count;
+				if (row == 0 || col == 0) {
+					/* Initialize first row and first column to count up */
+					*(matrix + row*num_cols + col) = ++count;
+				}
+				else {
+					/* Initialize all other spaces to 0 */
+					*(matrix + row*num_cols + col) = 0;
+				}
+			}
+			if (row == 0) {
+				count = 1;
 			}
 		}
 	}
 	
+	/* Print matrix for debugging purposes */
 	printMatrix(matrix, num_rows, num_cols);
 	
 	return 0;
