@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 /* Program for finding the longest common subsequence of two strings
  * Strings are entered in as arguments on the command line, and the longest
@@ -18,6 +19,7 @@ int main(int argc, char *argv[]) {
 	
 	int num_rows, num_cols;
 	int *matrix;
+	char *LCS;
 	
 	/* Elaborate more on use-cases when done implementing functionality */
 	if (argc != 3) {
@@ -52,7 +54,7 @@ void initMatrix(int *matrix, int rows, int cols) {
 		for (j=0; j < cols; j++) {
 			if (i == 0 || j == 0) {
 				/* Initialize first row and first column to count up */
-				*(matrix + i*cols + j) = ++count;
+				*(matrix + i*cols + j) = count++;
 			}
 			else {
 				/* Initialize all other spaces to 0 */
@@ -66,8 +68,14 @@ void initMatrix(int *matrix, int rows, int cols) {
 	}
 }
 
+/* Fills in the matrix, using a dynamic programming technique to determine the
+ * lowest cost path from the origin to the bottom right.
+ * Then, travel back from the bottom right to the origin, building up the LCS
+ * as the program goes.
+ */
 void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
 	int i, j;
+	int len_LCS;
 	
 	int left, diag, top;
 	
@@ -77,11 +85,17 @@ void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
 			if ( (*(s1+i-1)) == (*(s2+j-1)) )
 				diag = *(matrix + (i-1)*cols + (j-1));
 			else
-				diag = 10000; /*Arbitrarily large, change later*/
+				diag = INT_MAX; /*Arbitrarily large*/
 			top = *(matrix + (i-1)*cols + j);
 			*(matrix + i*cols + j) = minThree(left, diag, top) + 1;
 		}
 	}
+	
+	i = rows-1;
+	j = cols-1;
+	
+	len_LCS = ( strlen(s1) + strlen(s2) ) - *(matrix + i*cols + j);
+	printf("Length of LCS: %d\n", len_LCS);
 	
 	return;
 }
