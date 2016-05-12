@@ -6,8 +6,6 @@
 /* Program for finding the longest common subsequence of two strings
  * Strings are entered in as arguments on the command line, and the longest
  * common subsequence is printed to the command line.
- * Work in progress, currently contains test code for initializing a two 
- * dimensional array of ints at the proper size for use with the two strings
  */
 
 void initMatrix(int *matrix, int rows, int cols);
@@ -19,7 +17,6 @@ int main(int argc, char *argv[]) {
 	
 	int num_rows, num_cols;
 	int *matrix;
-	char *LCS;
 	
 	/* Elaborate more on use-cases when done implementing functionality */
 	if (argc != 3) {
@@ -38,7 +35,7 @@ int main(int argc, char *argv[]) {
 	findLCS(matrix, num_rows, num_cols, argv[1],argv[2]);
 	
 	/* Print matrix for debugging purposes */
-	printMatrix(matrix, num_rows, num_cols);
+	/* printMatrix(matrix, num_rows, num_cols); */
 	
 	return 0;
 }
@@ -75,10 +72,14 @@ void initMatrix(int *matrix, int rows, int cols) {
  */
 void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
 	int i, j;
-	int len_LCS;
-	
 	int left, diag, top;
+	int len_LCS;
+	char *LCS;
+	int temp, k;
 	
+	/* Fill in the matrix of values with costs to get from the origin to the
+	 * current spot in the array
+	 */
 	for(i=1; i<rows; i++) {
 		for(j=1; j<cols; j++){
 			left = *(matrix + i*cols + (j-1));
@@ -94,8 +95,41 @@ void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
 	i = rows-1;
 	j = cols-1;
 	
+	/* Determine length of LCS */
 	len_LCS = ( strlen(s1) + strlen(s2) ) - *(matrix + i*cols + j);
-	printf("Length of LCS: %d\n", len_LCS);
+	
+	/* Allocate space for storing LCS */
+	LCS = (char *)malloc((len_LCS+1)*sizeof(char));
+	k = len_LCS - 1;
+	
+	/* Traverse matrix from bottom right to beginning, building up the LCS each
+	 * time a diagonal is traversed.
+	 */
+	while ( ((temp = *(matrix + i*cols + j))) && (i!=0) && (j!=0) ) {
+		left = *(matrix + i*cols + (j-1));
+		diag = *(matrix + (i-1)*cols + (j-1));
+		top = *(matrix + (i-1)*cols + j);
+		
+		/* If the lowest cost path is to the left, move to the left */
+		if (left == (temp-1) )
+			j--;
+		/* If the lowest cost path is diagonal, move left and up, and build up LCS
+		 * with the character from s1
+		 */ 
+		else if ( (diag == (temp-1)) && (*(s1+i-1)) == (*(s2+j-1)) ) {
+			*(LCS+k) = *(s1+i-1);
+			i--;
+			j--;
+			k--;
+		}
+		/* If the lowest cost path is up, move up */
+		else {
+			i--;
+		}
+	}
+	
+	*(LCS + len_LCS) = '\0';
+	printf("Longest Common Subquence for %s and %s:\n%s\n", s1, s2 , LCS);
 	
 	return;
 }
