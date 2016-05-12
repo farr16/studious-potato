@@ -38,7 +38,7 @@ int main() {
 	/* Begin recursive backtracking, starting at the first row */
 	place(board, 0, len);
 	
-	printf("========EXECUTION COMPLETE========\n%d Solutions Found", sol_num);
+	printf("========EXECUTION COMPLETE========\n\n%d Solutions Found\n", sol_num);
 	
 	return 0;
 }
@@ -49,7 +49,7 @@ void place(char *board, int current_row, int len){
 	/* If this is called past final row, this is a solution/base case, return */
 	if(current_row == len) {
 		sol_num++;
-		printf("\n======Solution #%d Found======\n\n", sol_num);
+		printf("========Solution #%d Found========\n", sol_num);
 		printBoard(board, len);
 		return;
 	}
@@ -82,7 +82,7 @@ void place(char *board, int current_row, int len){
 			*(board + len*current_row + col) = 'Q';
 			place(board, current_row + 1, len);
 			/* Recursion returns here */
-			/* Remove place queen to scout for valid queen placements in same row
+			/* Remove placed queen to scout for valid queen placements in same row
 			 */
 			*(board + len*current_row + col) = ' ';
 		}
@@ -108,7 +108,7 @@ void printBoard(char * board, int len) {
 	/* Draw the bottom line of the board */
 	for(y=0; y<len; y++)
 		printf("+---");
-	printf("+\n");
+	printf("+\n\n");
 	
 	return;
 }
