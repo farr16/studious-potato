@@ -109,6 +109,11 @@ void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
 	
 	/* Allocate space for storing LCS */
 	LCS = (char *)malloc((len_LCS+1)*sizeof(char));
+	if (LCS == NULL) {
+		printf("Memory allocation failed.");
+		return;
+	}
+	
 	k = len_LCS - 1;
 	
 	/* Traverse matrix from bottom right to beginning, building up the LCS each
