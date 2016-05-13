@@ -20,14 +20,23 @@ int main(int argc, char *argv[]) {
 	
 	/* Elaborate more on use-cases when done implementing functionality */
 	if (argc != 3) {
-		printf("Improper number of arguments\n");
-		return 1;
+		puts("\nLCS\nWritten by Matthew Farr\n");
+			puts("This code outputs the longest common subsequence of two strings.");
+			puts("Format: [exe name] [string1] [string2]");
+			puts("Where [exe name] is the name of the .exe file created after compilation");
+			puts("of LCS.c, [string1] is the first string being compared, and [string2]");
+			puts("is the second string being compared");
+		return 2;
 	}
 	
 	num_rows = strlen(argv[1]) + 1; /* first string determines num of rows */
 	num_cols = strlen(argv[2]) + 1; /* second string informs num of columns */
 		
 	matrix = (int *)malloc(num_rows * num_cols * sizeof(int));
+	if(matrix == NULL) {
+		printf("Memory allocation failed.\n");
+		return 1;
+	}
 	
 	/* Initialize starting matrix */
 	initMatrix(matrix, num_rows, num_cols);
