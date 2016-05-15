@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
 	
 	findLCS(matrix, num_rows, num_cols, argv[1],argv[2]);
 	
+	free(matrix);
+	
 	/* Print matrix for debugging purposes */
 	/* printMatrix(matrix, num_rows, num_cols); */
 	
@@ -144,6 +146,8 @@ void findLCS(int *matrix, int rows, int cols, char* s1, char*s2){
 	
 	*(LCS + len_LCS) = '\0';
 	printf("Longest Common Subquence for %s and %s:\n%s\n", s1, s2 , LCS);
+	
+	free(LCS);
 	
 	return;
 }
