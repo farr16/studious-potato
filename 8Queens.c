@@ -40,6 +40,8 @@ int main() {
 	
 	printf("========EXECUTION COMPLETE========\n\n%d Solutions Found\n", sol_num);
 	
+	free(board);
+	
 	return 0;
 }
 
