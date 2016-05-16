@@ -18,7 +18,6 @@ int main(int argc, char *argv[]) {
 	int num_rows, num_cols;
 	int *matrix;
 	
-	/* Elaborate more on use-cases when done implementing functionality */
 	if (argc != 3) {
 		puts("\nLCS\nWritten by Matthew Farr\n");
 			puts("This code outputs the longest common subsequence of two strings.");

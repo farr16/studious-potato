@@ -9,8 +9,8 @@ void printBoard(char *board, int len);
 int sol_num;
 
 /* Program for solving the 8 queens puzzle.
- * VERY tentative at this point. As of now, contains prototype code for initializing
- * board;
+ * Prints each found solution onto the command line as it finds them.
+ * Upon finding final solution, prints number of solutions found.
  */
  
 int main() {
