@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SCORES	0	/*Print mode for scores table*/
+#define DIRECTIONS	1 /*Print mode for directions table*/
+
+void printScoreMatrix(int *matrix, int num_rows, int num_cols);
+void printDirectionMatrix(char *matrix, int num_rows, int num_cols);
+
 /* Program for computing the global alignment score of two nucleotide sequences
  * using a dynamic programming method.
  */
@@ -38,7 +44,6 @@ int main(int argc, char *argv[]) {
 		}
 		else
 			printf("Unrecognized input mode option. Use either string or file.\n");
-		return EXIT_SUCCESS;
 	}
 	
 	score_matrix = (int *) malloc(num_rows * num_cols * sizeof(int));
@@ -48,8 +53,60 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	
+	printf("Does code reach here?\n");
+	
+	printScoreMatrix(score_matrix, num_rows, num_cols);
+	printDirectionMatrix(direction_matrix, num_rows, num_cols);
+	
 	free(score_matrix);
 	free(direction_matrix);
 	
 	return 0;
+}
+
+/* Test code for printing contents of the matrix used for finding the ideal sequence 
+ * alignment
+ */
+void printScoreMatrix(int *matrix, int num_rows, int num_cols) {
+	int row, col;
+	
+	for (row=0; row < num_rows; row++) {
+		/* Print top line on matrix */
+		for(col=0; col < num_cols; col++)
+			printf("+---");
+		printf("+\n");
+		
+		/* Print row of integers from matrix */
+		for(col=0; col < num_cols; col++)
+			printf("|%3d", *(matrix + row*num_cols + col));
+		printf("|\n");
+	}
+	/* Print bottom line on matrix */
+	for(col=0; col < num_cols; col++) {
+			printf("+---");
+	}
+	printf("+\n");
+	return;
+}
+
+void printDirectionMatrix(char *matrix, int num_rows, int num_cols) {
+	int row, col;
+	
+	for (row=0; row < num_rows; row++) {
+		/* Print top line on matrix */
+		for(col=0; col < num_cols; col++)
+			printf("+---");
+		printf("+\n");
+		
+		/* Print row of directions from matrix */
+		for(col=0; col < num_cols; col++)
+			printf("| %c ", *(matrix + row*num_cols + col));
+		printf("|\n");
+	}
+	/* Print bottom line on matrix */
+	for(col=0; col < num_cols; col++) {
+			printf("+---");
+	}
+	printf("+\n");
+	return;
 }
