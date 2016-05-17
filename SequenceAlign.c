@@ -62,11 +62,19 @@ int main(int argc, char *argv[]) {
 	
 	int top, left, dag, val;
 	
+	/* Fill in rows of the cost table with path costs, starting at the top row
+	 * and going left to right. Fill in the directions table with direction each
+	 * calculated cost came from.
+	 */
 	for (row=1; row<num_rows; row++) {
 		for (col=1; col<num_cols; col++) {
+			/* Cost of gap between the top and bottom sequences */
 			top = *(score_matrix + (row-1)*num_cols + col) + GAP;
 			left = *(score_matrix + row*num_cols + (col-1)) + GAP;
 			
+			/* Determine if sequences match or mismatch at the substrings being
+			 * compared, increase diagonal score for match, decrease for mismatch
+			 */
 			if( *(argv[1]+ (row-1)) == *(argv[2] + (col-1)) )
 				dag = *(score_matrix + (row-1)*num_cols + (col-1)) + MATCH;
 			else
@@ -75,6 +83,7 @@ int main(int argc, char *argv[]) {
 			val = maxThree(top, left, dag);
 			*(score_matrix + row*num_cols + col) = val;
 			
+			/* Fill in directions table with where max score came from */
 			if(val == left)
 				*(direction_matrix + row*num_cols + col) = 'L';
 			else if (val == dag)
@@ -83,8 +92,6 @@ int main(int argc, char *argv[]) {
 				*(direction_matrix + row*num_cols + col) = 'T';
 		}
 	}
-	
-	printf("Second character of string 1: %c\n", *(argv[1] + 1));
 	
 	printScores(score_matrix, num_rows, num_cols);
 	printDirections(direction_matrix, num_rows, num_cols);
