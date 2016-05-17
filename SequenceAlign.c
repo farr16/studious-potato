@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SCORES	0	/*Print mode for scores table*/
-#define DIRECTIONS	1 /*Print mode for directions table*/
+#define MATCH		5	/*Positive reward for sequence nucleotide matching*/
+#define GAP			-4	/*Negative reward for gap in a nucleotide sequence*/
+#define MISMATCH	-6	/*Negative reward for mismatch in a nucleotide sequence*/
 
 void initScores(int *matrix, int num_rows, int num_cols);
 void initDirections(char *matrix, int num_rows, int num_cols);
@@ -69,12 +70,13 @@ int main(int argc, char *argv[]) {
 
 void initScores(int *matrix, int num_rows, int num_cols) {
 	int row, col, count;
-	count = 0; /*Test value*/
+	count = 0;
 	for (row=0; row < num_rows; row++) {
 		for (col=0; col < num_cols; col++) {
 			if (row == 0 || col == 0) {
-				/* Initialize first row and first column to count up */
-				*(matrix + row*num_cols + col) = count++;
+				/* Initialize first row and first column to decrement by 6 */
+				*(matrix + row*num_cols + col) = count;
+				count += MISMATCH;
 			}
 			else {
 				/* Initialize all other spaces to 0 */
@@ -83,28 +85,32 @@ void initScores(int *matrix, int num_rows, int num_cols) {
 		}
 		/* Reset counter for counting down the first column */
 		if (row == 0) {
-				count = 1;
+				count = MISMATCH;
 		}
 	}
 }
 
 void initDirections(char *matrix, int num_rows, int num_cols) {
 	int row, col;
-	char c = '!';/*Test value*/
+	char c = 'F';
 	for (row=0; row < num_rows; row++) {
 		for (col=0; col < num_cols; col++) {
-			if (row == 0 || col == 0) {
-				/* Initialize first row and first column to count up */
-				*(matrix + row*num_cols + col) = c++;
+			if (row == 0 && col == 0){
+				*(matrix + row*num_cols + col) = c;
+				c = 'L';
+			}
+			else if (row == 0 || col == 0) {
+				/* Initialize first row to L's and first column to T's */
+				*(matrix + row*num_cols + col) = c;
 			}
 			else {
 				/* Initialize all other spaces to blank */
 				*(matrix + row*num_cols + col) = ' ';
 			}
 		}
-		/* Reset counter for counting down the first column */
+		/* Set 'T' for first column after setting 'L' across first row */
 		if (row == 0) {
-				c = '!' + 1;/*Test value*/
+				c = 'T';
 		}
 	}
 }
