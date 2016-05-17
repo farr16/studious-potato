@@ -26,8 +26,7 @@ int main(int argc, char *argv[]) {
 		return 2;
 	}
 	
-	if( argv[3] != NULL)
-	{
+	if( argv[3] != NULL) {
 		if(strcmp(argv[3],"string") == 0) {
 			printf("INPUT mode: STRING");
 			num_rows = strlen(argv[1]) + 1;
@@ -39,7 +38,14 @@ int main(int argc, char *argv[]) {
 		}
 		else
 			printf("Unrecognized input mode option. Use either string or file.\n");
+		return 2;
 	}
+	
+	score_matrix = (int *) malloc(num_rows * num_cols * sizeof(int));
+	direction_matrix = (char *) malloc(num_rows * num_cols * sizeof(char));
+	
+	free(score_matrix);
+	free(direction_matrix);
 	
 	return 0;
 }
