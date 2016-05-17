@@ -10,6 +10,7 @@ void initScores(int *matrix, int num_rows, int num_cols);
 void initDirections(char *matrix, int num_rows, int num_cols);
 void printScores(int *matrix, int num_rows, int num_cols);
 void printDirections(char *matrix, int num_rows, int num_cols);
+int maxThree(int first, int second, int third);
 
 /* Program for computing the global alignment score of two nucleotide sequences
  * using a dynamic programming method.
@@ -17,7 +18,7 @@ void printDirections(char *matrix, int num_rows, int num_cols);
  
 int main(int argc, char *argv[]) {
 	
-	int num_rows, num_cols;
+	int num_rows, num_cols, row, col;
 	int *score_matrix;
 	char *direction_matrix;
 	
@@ -59,6 +60,32 @@ int main(int argc, char *argv[]) {
 	initScores(score_matrix, num_rows, num_cols);
 	initDirections(direction_matrix, num_rows, num_cols);
 	
+	int top, left, dag, val;
+	
+	for (row=1; row<num_rows; row++) {
+		for (col=1; col<num_cols; col++) {
+			top = *(score_matrix + (row-1)*num_cols + col) + GAP;
+			left = *(score_matrix + row*num_cols + (col-1)) + GAP;
+			
+			if( *(argv[1]+ (row-1)) == *(argv[2] + (col-1)) )
+				dag = *(score_matrix + (row-1)*num_cols + (col-1)) + MATCH;
+			else
+				dag = *(score_matrix + (row-1)*num_cols + (col-1)) + MISMATCH;
+			
+			val = maxThree(top, left, dag);
+			*(score_matrix + row*num_cols + col) = val;
+			
+			if(val == left)
+				*(direction_matrix + row*num_cols + col) = 'L';
+			else if (val == dag)
+				*(direction_matrix + row*num_cols + col) = 'D';
+			else
+				*(direction_matrix + row*num_cols + col) = 'T';
+		}
+	}
+	
+	printf("Second character of string 1: %c\n", *(argv[1] + 1));
+	
 	printScores(score_matrix, num_rows, num_cols);
 	printDirections(direction_matrix, num_rows, num_cols);
 	
@@ -68,6 +95,9 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+/* Function for initializing the table of values used to calculate the cost of
+ * each path from the origin to the final alignment
+ */
 void initScores(int *matrix, int num_rows, int num_cols) {
 	int row, col, count;
 	count = 0;
@@ -90,6 +120,9 @@ void initScores(int *matrix, int num_rows, int num_cols) {
 	}
 }
 
+/* Function for initializing the table of directions used to trace our way
+ * to the final alignment once the path scores have been calculated
+ */
 void initDirections(char *matrix, int num_rows, int num_cols) {
 	int row, col;
 	char c = 'F';
@@ -113,6 +146,17 @@ void initDirections(char *matrix, int num_rows, int num_cols) {
 				c = 'T';
 		}
 	}
+}
+
+/* Returns the maximum of three integer values
+ */
+int maxThree(int first, int second, int third) {
+	if (first >= second && first >= third)
+		return first;
+	else if (second >= first && second >= third)
+		return second;
+	else
+		return third;
 }
 
 /* Test code for printing contents of the scores matrix used for finding the ideal
