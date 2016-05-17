@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 			puts("[seq2] is either the second sequence to be compared or the name of a FASTA");
 			puts("formatted filed containing the sequence, and [input mode] is either string or");
 			puts("file.");
-		return 2;
+		return EXIT_SUCCESS;
 	}
 	
 	if( argv[3] != NULL) {
@@ -38,11 +38,15 @@ int main(int argc, char *argv[]) {
 		}
 		else
 			printf("Unrecognized input mode option. Use either string or file.\n");
-		return 2;
+		return EXIT_SUCCESS;
 	}
 	
 	score_matrix = (int *) malloc(num_rows * num_cols * sizeof(int));
 	direction_matrix = (char *) malloc(num_rows * num_cols * sizeof(char));
+	if ( (score_matrix == NULL) || (direction_matrix == NULL) ){
+		printf("Memory allocation failure\n");
+		return EXIT_FAILURE;
+	}
 	
 	free(score_matrix);
 	free(direction_matrix);
