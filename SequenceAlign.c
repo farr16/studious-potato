@@ -5,8 +5,10 @@
 #define SCORES	0	/*Print mode for scores table*/
 #define DIRECTIONS	1 /*Print mode for directions table*/
 
-void printScoreMatrix(int *matrix, int num_rows, int num_cols);
-void printDirectionMatrix(char *matrix, int num_rows, int num_cols);
+void initScores(int *matrix, int num_rows, int num_cols);
+void initDirections(char *matrix, int num_rows, int num_cols);
+void printScores(int *matrix, int num_rows, int num_cols);
+void printDirections(char *matrix, int num_rows, int num_cols);
 
 /* Program for computing the global alignment score of two nucleotide sequences
  * using a dynamic programming method.
@@ -34,12 +36,12 @@ int main(int argc, char *argv[]) {
 	
 	if( argv[3] != NULL) {
 		if(strcmp(argv[3],"string") == 0) {
-			printf("INPUT mode: STRING");
+			printf("INPUT mode: STRING\n");
 			num_rows = strlen(argv[1]) + 1;
 			num_cols = strlen(argv[2]) + 1;
 		}
 		else if(strcmp(argv[3],"file") == 0) {
-			printf("INPUT mode: FILE");
+			printf("INPUT mode: FILE\n");
 			/*TODO: Input file reading functionality*/
 		}
 		else
@@ -53,10 +55,11 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	
-	printf("Does code reach here?\n");
+	initScores(score_matrix, num_rows, num_cols);
+	initDirections(direction_matrix, num_rows, num_cols);
 	
-	printScoreMatrix(score_matrix, num_rows, num_cols);
-	printDirectionMatrix(direction_matrix, num_rows, num_cols);
+	printScores(score_matrix, num_rows, num_cols);
+	printDirections(direction_matrix, num_rows, num_cols);
 	
 	free(score_matrix);
 	free(direction_matrix);
@@ -64,10 +67,52 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-/* Test code for printing contents of the matrix used for finding the ideal sequence 
- * alignment
+void initScores(int *matrix, int num_rows, int num_cols) {
+	int row, col, count;
+	count = 0; /*Test value*/
+	for (row=0; row < num_rows; row++) {
+		for (col=0; col < num_cols; col++) {
+			if (row == 0 || col == 0) {
+				/* Initialize first row and first column to count up */
+				*(matrix + row*num_cols + col) = count++;
+			}
+			else {
+				/* Initialize all other spaces to 0 */
+				*(matrix + row*num_cols + col) = 0;
+			}
+		}
+		/* Reset counter for counting down the first column */
+		if (row == 0) {
+				count = 1;
+		}
+	}
+}
+
+void initDirections(char *matrix, int num_rows, int num_cols) {
+	int row, col;
+	char c = '!';/*Test value*/
+	for (row=0; row < num_rows; row++) {
+		for (col=0; col < num_cols; col++) {
+			if (row == 0 || col == 0) {
+				/* Initialize first row and first column to count up */
+				*(matrix + row*num_cols + col) = c++;
+			}
+			else {
+				/* Initialize all other spaces to blank */
+				*(matrix + row*num_cols + col) = ' ';
+			}
+		}
+		/* Reset counter for counting down the first column */
+		if (row == 0) {
+				c = '!' + 1;/*Test value*/
+		}
+	}
+}
+
+/* Test code for printing contents of the scores matrix used for finding the ideal
+ * sequence alignment
  */
-void printScoreMatrix(int *matrix, int num_rows, int num_cols) {
+void printScores(int *matrix, int num_rows, int num_cols) {
 	int row, col;
 	
 	for (row=0; row < num_rows; row++) {
@@ -89,7 +134,10 @@ void printScoreMatrix(int *matrix, int num_rows, int num_cols) {
 	return;
 }
 
-void printDirectionMatrix(char *matrix, int num_rows, int num_cols) {
+/* Test code for printing contents of the directions matrix used for finding the
+ * ideal sequence alignment
+ */
+void printDirections(char *matrix, int num_rows, int num_cols) {
 	int row, col;
 	
 	for (row=0; row < num_rows; row++) {
