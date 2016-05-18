@@ -155,6 +155,9 @@ int main(int argc, char *argv[]) {
 	free(score_matrix);
 	free(direction_matrix);
 	
+	free(top_align);
+	free(bot_align);
+	
 	return EXIT_SUCCESS;
 }
 
