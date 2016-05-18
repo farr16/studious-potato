@@ -15,7 +15,6 @@ int maxThree(int first, int second, int third);
 /* Program for computing the global alignment score of two nucleotide sequences
  * using a dynamic programming method.
  */
- 
 int main(int argc, char *argv[]) {
 	
 	int num_rows, num_cols, row, col;
@@ -45,6 +44,7 @@ int main(int argc, char *argv[]) {
 		else if(strcmp(argv[3],"file") == 0) {
 			printf("INPUT mode: FILE\n");
 			/*TODO: Input file reading functionality*/
+			return EXIT_SUCCESS; /* for now, return, since program will crash otherwise*/
 		}
 		else
 			printf("Unrecognized input mode option. Use either string or file.\n");
@@ -95,6 +95,31 @@ int main(int argc, char *argv[]) {
 	
 	printScores(score_matrix, num_rows, num_cols);
 	printDirections(direction_matrix, num_rows, num_cols);
+	
+	char *top_align;
+	char *bot_align;
+	char c;
+	int len;
+	
+	row = num_rows-1;
+	col = num_cols-1;
+	
+	len = 0;
+	
+	while(!(row==0 && col==0)) {
+		c = *(direction_matrix + row*num_cols + col);
+		if (c == 'L')
+			col--;
+		else if (c == 'T')
+			row--;
+		else {
+			col--;
+			row--;
+		}
+		len++;
+	}
+	
+	printf("Length of alignment strings:\t%d\n", len);
 	
 	free(score_matrix);
 	free(direction_matrix);
