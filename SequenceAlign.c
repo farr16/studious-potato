@@ -21,34 +21,23 @@ int main(int argc, char *argv[]) {
 	int *score_matrix;
 	char *direction_matrix;
 	
-	/*Input format: [.exe] [string1] [string2] [input_mode] */
-	if (argc != 4) {
+	/*Input format: [.exe] [string1] [string2]*/
+	if (argc != 3) {
 		puts("\nSequenceAlign\nWritten by Matthew Farr\n");
-			puts("This code outputs the optimal sequence alignment of two nucleotide sequences.");
-			puts("Format: [.exe name] [seq1] [seq2] [input mode]");
-			puts("Where [exe name] is the name of the .exe file created after compilation");
-			puts("of SequenceAlign.c, [seq1] is either the first sequence to be compared ");
-			puts("or the name of a FASTA formatted file containing the sequence, ");
-			puts("[seq2] is either the second sequence to be compared or the name of a FASTA");
-			puts("formatted filed containing the sequence, and [input mode] is either string or");
-			puts("file.");
+			puts("This code outputs the optimal global sequence alignment of two nucleotide sequences.");
+			puts("Format: [.exe name] [seq1] [seq2] ");
+			puts("Where [exe name] is the name of the .exe file created after compilation of SequenceAlign.c, ");
+			puts("[seq1] is the first sequence to be aligned, ");
+			puts(" and [seq2] is the second sequence to be aligned.");
 		return EXIT_SUCCESS;
 	}
 	
-	if( argv[3] != NULL) {
-		if(strcmp(argv[3],"string") == 0) {
-			printf("INPUT mode: STRING\n");
-			num_rows = strlen(argv[1]) + 1;
-			num_cols = strlen(argv[2]) + 1;
-		}
-		else if(strcmp(argv[3],"file") == 0) {
-			printf("INPUT mode: FILE\n");
-			/*TODO: Input file reading functionality*/
-			return EXIT_SUCCESS; /* for now, return, since program will crash otherwise*/
-		}
-		else
-			printf("Unrecognized input mode option. Use either string or file.\n");
-	}
+	if (argv[1]!=NULL)
+		num_rows = strlen(argv[1]) + 1;
+	if (argv[2]!=NULL)
+		num_cols = strlen(argv[2]) + 1;
+	
+	printf("String 1: %s\nString 2: %s\n", argv[1], argv[2]);
 	
 	score_matrix = (int *) malloc(num_rows * num_cols * sizeof(int));
 	direction_matrix = (char *) malloc(num_rows * num_cols * sizeof(char));
@@ -93,8 +82,8 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
-	printScores(score_matrix, num_rows, num_cols);
-	printDirections(direction_matrix, num_rows, num_cols);
+	/*printScores(score_matrix, num_rows, num_cols);*/
+	/*printDirections(direction_matrix, num_rows, num_cols);*/
 	
 	char *top_align;
 	char *bot_align;
@@ -104,8 +93,11 @@ int main(int argc, char *argv[]) {
 	row = num_rows-1;
 	col = num_cols-1;
 	
+	printf("Alignment Score: %d\n", *(score_matrix + row*num_cols + col) );
+	
 	len = 0;
 	
+	/* Get the length required to store the alignment strings */
 	while(!(row==0 && col==0)) {
 		c = *(direction_matrix + row*num_cols + col);
 		if (c == 'L')
@@ -119,12 +111,51 @@ int main(int argc, char *argv[]) {
 		len++;
 	}
 	
-	printf("Length of alignment strings:\t%d\n", len);
+	/*printf("Length of alignment :\t%d\n", len);*/
+	
+	top_align = (char *)malloc((len+1) * sizeof(char));
+	bot_align = (char *)malloc((len+1) * sizeof(char));
+	
+	if(top_align==NULL || bot_align==NULL) {
+		printf("Memory allocation error.\n");
+		return EXIT_FAILURE;
+	}
+	
+	*(top_align + len) = '\0';
+	*(bot_align + len) = '\0';
+	len--;
+	
+	row = num_rows-1;
+	col = num_cols-1;
+	
+	while(!(row==0 && col==0)) {
+		c = *(direction_matrix + row*num_cols + col);
+		if (c == 'L'){
+			*(top_align+len) = '-';
+			*(bot_align+len) = *(argv[2]+col-1);
+			col--;
+		}
+		else if (c == 'T') {
+			*(top_align+len) = *(argv[1]+row-1);
+			*(bot_align+len) = '-';
+			row--;
+		}
+		else {
+			*(top_align+len) = *(argv[1]+row-1);
+			*(bot_align+len) = *(argv[2]+col-1);
+			col--;
+			row--;
+		}
+		len--;
+	}
+	
+	printf("-----FINAL ALIGNMENT-----\n");
+	printf("String 1 Align: %s\nString 2 Align: %s\n", top_align, bot_align);
 	
 	free(score_matrix);
 	free(direction_matrix);
 	
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 /* Function for initializing the table of values used to calculate the cost of
