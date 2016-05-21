@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SIZE	8 /*length of each side of the board*/
+#define DEFAULT_SIZE	8 /*length of each side of the board*/
 
 void place(char *board, int row, int len);
 void printBoard(char *board, int len);
@@ -13,11 +13,20 @@ int sol_num;
  * Upon finding final solution, prints number of solutions found.
  */
  
-int main() {
+int main(int argc, char *argv[]) {
 	int len, x, y;
 	char *board;
 	
-	len = SIZE;
+	if(argc==2)
+		len = atoi(argv[1]);
+	else if (argc==1)
+		len = DEFAULT_SIZE;
+	else {
+		puts("Invalid number of arguments. Either invoke with no additional arguments\n");
+		puts("to use default board size of 8, or with a single additional integer argument\n");
+		puts("specifying the len of each side of the board.");
+		return EXIT SUCCESS;
+	}
 	
 	sol_num = 0;
 	
@@ -25,7 +34,7 @@ int main() {
 	board = (char *)malloc(len * len * sizeof(char));
 	if (board == NULL) {
 		printf("Memory Allocation ERROR");
-		return 1;
+		return EXIT_FAILURE;
 	}
 	
 	/* Clear the board of any junk data */
@@ -42,7 +51,7 @@ int main() {
 	
 	free(board);
 	
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 void place(char *board, int current_row, int len){
